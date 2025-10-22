@@ -1,0 +1,25 @@
+services:
+  dev:
+    container_name: dev
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./files/:/app/files/
+      - ./config.json:/app/config.json
+      - ./metadata.json:/app/metadata.json
+    expose:
+      - 8080
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.dev.rule=Host(`uploads.dev.local`)"
+      - "traefik.http.routers.dev.entrypoints=web"
+      - "traefik.http.routers.dev.entrypoints=websecure"
+      - "traefik.http.routers.dev.tls=true"
+      - "traefik.http.services.dev.loadbalancer.server.port=8080"
+    networks:
+      - local-traefik
+
+networks:
+  local-traefik:
+    external: true
